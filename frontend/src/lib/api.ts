@@ -16,7 +16,8 @@ export const createHabit = (data: { name: string }) => api.post('/habits', data)
 export const getHabits = () => api.get('/habits');
 export const getHabit = (habitId: number) => api.get(`/habits/${habitId}`);
 
-export const toggleHabitDone = async (habitId: string) => {
+export const toggleHabitDone = async (habitId: number) => {
+  console.log(`Habit ${habitId} toggled for today`);
   return await axios.post(`/api/habits/${habitId}/toggle`);
 };
 
