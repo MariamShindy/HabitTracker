@@ -5,7 +5,8 @@ import {
   text,
   timestamp,
   boolean,
-  integer
+  integer,
+  unique
 } from 'drizzle-orm/pg-core';
 
 export const users = pgTable('users', {
@@ -28,7 +29,9 @@ export const habitEntries = pgTable('habit_entries', {
   habitId: integer('habit_id').notNull().references(() => habits.id),
   date: timestamp('date').notNull(),
   completed: boolean('completed').notNull().default(false),
-});
+}, (table) => ({
+  uniqueHabitPerDay: unique().on(table.habitId, table.date),
+}));
 
 export const habitCategories = pgTable('habit_categories', {
   id: serial('id').primaryKey(),

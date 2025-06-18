@@ -1,11 +1,10 @@
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import { Login } from './pages/Login';
 import { Register } from './pages/Register';
-// import  CreateHabit from './pages/CreateHabit';
 import CreateHabit from './pages/CreateHabit';
-// import { Dashboard } from './pages/Dashboard';
 import Dashboard from './pages/Dashboard';
 import HabitDetails from './pages/HabitDetails'; 
+import EditHabit from './pages/EditHabit';
 import './index.css';
 
 export default function App() {
@@ -17,6 +16,7 @@ export default function App() {
         <Route path="/dashboard" element={<Dashboard />} />
         <Route path="/create" element={<CreateHabit />} />
         <Route path="/habit/:id" element={<HabitDetails />} /> 
+        <Route path="/habit/:id/edit" element={<EditHabit />} />
         <Route path="/" element={<Login />} />
       </Routes>
     </BrowserRouter>

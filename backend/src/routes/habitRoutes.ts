@@ -4,7 +4,10 @@ import {
   getHabitsHandler,
   createHabitEntryHandler,
   getHabitStatsHandler,
-  toggleHabitDoneHandler
+  toggleHabitDoneHandler,
+  updateHabitHandler,
+  getHabitByIdHandler,
+  deleteHabitHandler
 } from '../controllers/habitController';
 import { authMiddleware } from '../middlewares/authMiddleware';
 
@@ -16,5 +19,7 @@ router.get('/habits', getHabitsHandler);
 router.post('/habit-entries', createHabitEntryHandler);
 router.get('/habits/:habitId/stats', getHabitStatsHandler);
 router.post('/habits/:habitId/toggle', authMiddleware, toggleHabitDoneHandler);
-
+router.put('/habits/:habitId', updateHabitHandler);
+router.get('/habits/:habitId', getHabitByIdHandler);
+router.delete('/habits/:habitId', deleteHabitHandler);
 export default router;

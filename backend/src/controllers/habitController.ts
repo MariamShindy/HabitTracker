@@ -1,9 +1,15 @@
 import { Request, Response } from 'express';
 import { z } from 'zod';
-import { createHabit, getUserHabits, createHabitEntry, getHabitEntries, calculateStreak } from '../db/queries';
+import { createHabit, getUserHabits, 
+  createHabitEntry , getHabitEntries , 
+  calculateStreak , updateHabitById , 
+  deleteHabitById } from '../db/queries';
 
 const habitSchema = z.object({
   name: z.string().min(1).max(100),
+});
+const habitUpdateSchema = z.object({
+  name: z.string().min(1),
 });
 
 const habitEntrySchema = z.object({
@@ -76,6 +82,7 @@ export const getHabitStatsHandler = async (req: Request, res: Response) => {
 export const toggleHabitDoneHandler = async (req: Request, res: Response) => {
   try {
     const habitId = z.number().parse(Number(req.params.habitId));
+    console.log('Toggle handler params:', req.params);
     // const userId = (req as any).user.userId;
     const today = new Date();
     today.setHours(0, 0, 0, 0);
@@ -92,7 +99,48 @@ export const toggleHabitDoneHandler = async (req: Request, res: Response) => {
       return res.status(201).json(newEntry[0]);
     }
   } catch (error) {
-    console.error('Toggle error:', error);
+console.error('Toggle error:', error);
     return res.status(400).json({ error: 'Invalid request' });
+  }
+};
+
+export const updateHabitHandler = async (req: Request, res: Response) => {
+  try {
+    const habitId = parseInt(req.params.habitId);
+    const { name } = habitSchema.parse(req.body);
+    const [updated] = await updateHabitById(habitId, name);
+
+    if (!updated) return res.status(404).json({ error: 'Habit not found' });
+
+    res.json({ message: 'Habit updated', habit: updated });
+  } catch (err) {
+    console.error(err);
+    res.status(400).json({ error: 'Invalid input' });
+  }
+};
+export const getHabitByIdHandler = async (req: Request, res: Response) => {
+  try {
+    const habitId = parseInt(req.params.habitId);
+    const habits = await getUserHabits((req as any).user.userId);
+    const habit = habits.find((h) => h.id === habitId);
+
+    if (!habit) return res.status(404).json({ error: 'Habit not found' });
+
+    res.json(habit);
+  } catch (err) {
+    res.status(400).json({ error: 'Invalid input' });
+  }
+};
+export const deleteHabitHandler = async (req: Request, res: Response) => {
+  try {
+    const habitId = parseInt(req.params.habitId);
+    const [deleted] = await deleteHabitById(habitId);
+
+    if (!deleted) return res.status(404).json({ error: "Habit not found" });
+
+    res.json({ message: "Habit deleted", habit: deleted });
+  } catch (err) {
+    console.error(err);
+    res.status(400).json({ error: "Invalid input" });
   }
 };

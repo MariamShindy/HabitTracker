@@ -1,3 +1,4 @@
+import { useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { habitSchema } from "../lib/schemas";
@@ -14,16 +15,21 @@ import {
 import { Input } from "@/components/ui/input";
 
 type HabitFormProps = {
-  onSubmit: (data: any) => void;
+  onSubmit: (data: { name: string }) => void;
+  defaultValues?: { name: string };
 };
 
-export const HabitForm = ({ onSubmit }: HabitFormProps) => {
+export const HabitForm = ({ onSubmit, defaultValues }: HabitFormProps) => {
   const form = useForm<z.infer<typeof habitSchema>>({
     resolver: zodResolver(habitSchema),
-    defaultValues: {
-      name: "",
-    },
+    defaultValues, 
   });
+
+  useEffect(() => {
+    if (defaultValues) {
+      form.reset(defaultValues);
+    }
+  }, [defaultValues, form]);
 
   return (
     <Form {...form}>
@@ -33,29 +39,16 @@ export const HabitForm = ({ onSubmit }: HabitFormProps) => {
           name="name"
           render={({ field }) => (
             <FormItem>
-              <FormLabel className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
-                Habit Name
-              </FormLabel>
+              <FormLabel>Habit Name</FormLabel>
               <FormControl>
-                <Input
-                  {...field}
-                  placeholder="e.g. Drink Water"
-                  className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg 
-                             focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 
-                             dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 
-                             dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                />
+                <Input {...field} placeholder="e.g. Drink Water" />
               </FormControl>
-              <FormMessage className="text-red-500 text-sm mt-1" />
+              <FormMessage />
             </FormItem>
           )}
         />
-
-        <Button
-          type="submit"
-          className="w-full bg-blue-600 hover:bg-blue-700 text-white font-medium text-sm px-5 py-2.5 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-        >
-          Create Habit
+        <Button type="submit" className="bg-gradient-to-r from-indigo-500 to-purple-500 text-white hover:brightness-110 px-5 py-2 rounded-md text-sm font-medium shadow">
+          {defaultValues ? "Update Habit" : "Create Habit"}
         </Button>
       </form>
     </Form>

@@ -26,16 +26,41 @@ export const getUserHabits = async (userId: number) => {
 };
 
 export const createHabitEntry = async (habitId: number, date: Date, completed: boolean) => {
+  const existing = await db
+    .select()
+    .from(habitEntries)
+    .where(
+      and(
+        eq(habitEntries.habitId, habitId),
+        eq(habitEntries.date, date)
+      )
+    );
+
+  if (existing.length > 0) {
+    return db
+      .update(habitEntries)
+      .set({ completed })
+      .where(
+        and(
+          eq(habitEntries.habitId, habitId),
+          eq(habitEntries.date, date)
+        )
+      )
+      .returning();
+  } else {
+    return db
+      .insert(habitEntries)
+      .values({ habitId, date, completed })
+      .returning();
+  }
+};
+export const updateHabitById = async (id: number, name: string) => {
   return db
-    .insert(habitEntries)
-    .values({ habitId, date, completed })
-    .onConflictDoUpdate({
-      target: [habitEntries.habitId, habitEntries.date],
-      set: { completed },
-    })
+    .update(habits)
+    .set({ name })
+    .where(eq(habits.id, id))
     .returning();
 };
-
 export const getHabitEntries = async (habitId: number, startDate: Date, endDate: Date) => {
   return db
     .select()
@@ -49,6 +74,11 @@ export const getHabitEntries = async (habitId: number, startDate: Date, endDate:
     );
 };
 
+export const deleteHabitById = async (id: number) => {
+    await db.delete(habitEntries).where(eq(habitEntries.habitId, id));
+    await db.delete(streaks).where(eq(streaks.habitId, id));
+  return db.delete(habits).where(eq(habits.id, id)).returning();
+};
 export const calculateStreak = async (habitId: number) => {
   const entries = await db
     .select()
@@ -73,14 +103,32 @@ export const calculateStreak = async (habitId: number) => {
   }
 
   if (currentStreak > 0) {
-    await db
-      .insert(streaks)
-      .values({ habitId, startDate: streakStart, length: currentStreak })
-      .onConflictDoUpdate({
-        target: [streaks.habitId],
-        set: { length: currentStreak, startDate: streakStart },
-      });
+    const existing = await db
+      .select()
+      .from(streaks)
+      .where(eq(streaks.habitId, habitId));
+
+    if (existing.length > 0) {
+      await db
+        .update(streaks)
+        .set({
+          length: currentStreak,
+          startDate: streakStart,
+        })
+        .where(eq(streaks.habitId, habitId));
+    } else {
+      await db
+        .insert(streaks)
+        .values({
+          habitId,
+          startDate: streakStart,
+          length: currentStreak,
+        });
+    }
   }
 
   return { currentStreak, longestStreak };
+};
+export const findUserById = async (id: number) => {
+  return await db.select().from(users).where(eq(users.id, id)).limit(1); 
 };
