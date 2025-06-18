@@ -21,7 +21,7 @@ const habitEntrySchema = z.object({
 export const createHabitHandler = async (req: Request, res: Response) => {
   try {
     const { name } = habitSchema.parse(req.body);
-    const userId = (req as any).user.userId; // From auth middleware
+    const userId = (req as any).user.userId; 
     const [habit] = await createHabit(name, userId);
     res.status(201).json(habit);
   } catch (error) {
@@ -43,7 +43,7 @@ export const createHabitEntryHandler = async (req: Request, res: Response) => {
   try {
     const { habitId, date, completed } = habitEntrySchema.parse(req.body);
     const [entry] = await createHabitEntry(habitId, date, completed);
-    await calculateStreak(habitId); // Update streak
+    await calculateStreak(habitId);
     res.json(entry);
   } catch (error) {
     res.status(400).json({ error: 'Invalid input' });
@@ -83,7 +83,6 @@ export const toggleHabitDoneHandler = async (req: Request, res: Response) => {
   try {
     const habitId = z.number().parse(Number(req.params.habitId));
     console.log('Toggle handler params:', req.params);
-    // const userId = (req as any).user.userId;
     const today = new Date();
     today.setHours(0, 0, 0, 0);
 

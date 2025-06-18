@@ -5,7 +5,7 @@ interface HabitCardProps {
   habit: {
     id: number;
     name: string;
-    completed?: boolean; 
+    completed?: boolean;
   };
 }
 

@@ -1,6 +1,12 @@
 import { useState } from 'react';
 import { subDays } from 'date-fns';
-import { Select, SelectContent, SelectItem, SelectTrigger } from '@radix-ui/react-select';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select';
 
 interface DateSelectorProps {
   onChange: (range: { startDate: Date; endDate: Date }) => void;
@@ -30,15 +36,17 @@ export const DateSelector = ({ onChange }: DateSelectorProps) => {
   };
 
   return (
-    <Select onValueChange={handleChange} defaultValue={range}>
-      <SelectTrigger className="w-[180px] border rounded-md p-2">
-        Last {range} days
-      </SelectTrigger>
-      <SelectContent>
-        <SelectItem value="7">Last 7 days</SelectItem>
-        <SelectItem value="30">Last 30 days</SelectItem>
-        <SelectItem value="90">Last 90 days</SelectItem>
-      </SelectContent>
-    </Select>
+    <div className="w-full max-w-xs mt-4">
+      <Select onValueChange={handleChange} defaultValue={range}>
+        <SelectTrigger className="w-full">
+          <SelectValue placeholder={`Last ${range} days`} />
+        </SelectTrigger>
+        <SelectContent>
+          <SelectItem value="7">Last 7 days</SelectItem>
+          <SelectItem value="30">Last 30 days</SelectItem>
+          <SelectItem value="90">Last 90 days</SelectItem>
+        </SelectContent>
+      </Select>
+    </div>
   );
 };

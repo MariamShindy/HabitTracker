@@ -44,7 +44,12 @@ export const Login = () => {
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-100 px-4">
       <Card className="w-[600px] max-w-md shadow-md border border-gray-200 rounded-lg">
-        <CardHeader className="pb-4">
+        <CardHeader className="pb-4 flex flex-col items-center">
+          <img
+            src="/imgs/habit.png"
+            alt="Habit logo"
+            className="w-20 h-20 rounded-full mb-2 object-cover"
+          />
           <h2 className="text-2xl font-semibold text-center text-gray-800">Login</h2>
         </CardHeader>
         <CardContent className="px-6 pb-6">
@@ -87,7 +92,7 @@ export const Login = () => {
               />
               <Button
                 type="submit"
-                className="w-full h-9 mt-4 bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium"
+                className="w-full text-gray-900 bg-gradient-to-r from-teal-200 to-lime-200 hover:bg-gradient-to-l hover:from-teal-200 hover:to-lime-200 focus:ring-4 focus:outline-none focus:ring-lime-200 dark:focus:ring-teal-700 font-medium rounded-lg text-sm"
               >
                 Login
               </Button>

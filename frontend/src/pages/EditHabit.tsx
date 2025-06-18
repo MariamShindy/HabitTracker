@@ -9,19 +9,19 @@ export default function EditHabit() {
   const [defaultValues, setDefaultValues] = useState<{ name: string } | null>(null); // use null initially
 
   useEffect(() => {
-  if (id) {
-    getHabit(Number(id)).then((res) => {
-      console.log("Habit fetched:", res.data); 
-      setDefaultValues({ name: res.data.name });
-    }).catch((err) => {
-      console.error("Error fetching habit:", err); 
-    });
-  }
-}, [id]);
+    if (id) {
+      getHabit(Number(id)).then((res) => {
+        console.log("Habit fetched:", res.data);
+        setDefaultValues({ name: res.data.name });
+      }).catch((err) => {
+        console.error("Error fetching habit:", err);
+      });
+    }
+  }, [id]);
 
   const handleSubmit = async (data: { name: string }) => {
     await updateHabit(Number(id), data);
-    navigate("/Dashboard"); 
+    navigate("/Dashboard");
   };
 
   if (!defaultValues) {
@@ -29,9 +29,13 @@ export default function EditHabit() {
   }
 
   return (
-    <div className="p-4 max-w-xl mx-auto">
-      <h1 className="text-2xl font-bold mb-4">Edit Habit</h1>
-      <HabitForm onSubmit={handleSubmit} defaultValues={defaultValues} />
+    <div className="min-h-screen flex items-center justify-center bg-gray-100 dark:bg-gray-900 px-4">
+      <div className="w-full max-w-sm p-6 bg-white dark:bg-gray-800 rounded-lg shadow-md">
+        <h2 className="text-lg font-medium text-gray-900 dark:text-white mb-4 text-center">
+          Edit Habit
+        </h2>
+        <HabitForm onSubmit={handleSubmit} defaultValues={defaultValues} />
+      </div>
     </div>
   );
 }
